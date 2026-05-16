@@ -62,3 +62,64 @@ The component should be designed to **accept podcast data via attributes or prop
   - How to listen for interaction events
 
 ---
+## Usage
+
+### Files added
+
+- `PodcastPreview.js` — the reusable Web Component definition.
+- `index.html` — demo page showing the component in action.
+- `app.js` — lightweight page logic that creates preview cards and listens for custom events.
+
+### Registering the component
+
+The component registers itself automatically when `PodcastPreview.js` is imported:
+
+```js
+import "./PodcastPreview.js";
+```
+
+### Passing podcast data
+
+You can pass data into the component with attributes:
+
+```html
+<podcast-preview
+  podcast-id="10716"
+  cover="https://example.com/podcast-cover.jpg"
+  title="Something Was Wrong"
+  genres="Investigative Journalism, True Crime"
+  seasons="14"
+  updated="2022-11-03T07:00:00.000Z"
+></podcast-preview>
+```
+
+Or by setting properties in JavaScript:
+
+```js
+const preview = document.createElement("podcast-preview");
+preview.cover = "https://example.com/podcast-cover.jpg";
+preview.title = "Something Was Wrong";
+preview.genres = ["Investigative Journalism", "True Crime"];
+preview.seasons = 14;
+preview.updated = "2022-11-03T07:00:00.000Z";
+document.body.appendChild(preview);
+```
+
+### Listening for interaction events
+
+When a user clicks a podcast card, the component emits a custom event named `podcast-preview-selected`.
+The event bubbles and is composed, so parent logic can listen outside the component:
+
+```js
+document.addEventListener("podcast-preview-selected", (event) => {
+  const { title, genres, seasons, updated } = event.detail;
+  console.log("Selected podcast:", title, genres, seasons, updated);
+});
+```
+
+### Notes
+
+- The component uses Shadow DOM for encapsulated styles and layout.
+- It is stateless and relies on parent-supplied data.
+- The demo layout is responsive and supports desktop and mobile.
+
