@@ -8,14 +8,64 @@ const modalGenres = document.getElementById("modalGenres");
 const modalSeasons = document.getElementById("modalSeasons");
 const modalUpdated = document.getElementById("modalUpdated");
 const modalClose = document.getElementById("modalClose");
+const genreFilter = document.getElementById("genreFilter");
+const sortFilter = document.getElementById("sortFilter");
 
 const genreLookup = new Map(genres.map((genre) => [genre.id, genre.title]));
+let filteredPodcasts = [...podcasts];
+
+/**
+ * Populate the genre filter dropdown.
+ */
+function populateGenreFilter() {
+  genres.forEach((genre) => {
+    const option = document.createElement("option");
+    option.value = genre.id;
+    option.textContent = genre.title;
+    genreFilter.appendChild(option);
+  });
+}
+
+/**
+ * Filter podcasts by genre and sort them.
+ */
+function applyFiltersAndSort() {
+  let result = [...podcasts];
+
+  const selectedGenre = genreFilter.value;
+  if (selectedGenre) {
+    result = result.filter((podcast) =>
+      podcast.genres.includes(Number(selectedGenre))
+    );
+  }
+
+  const sortBy = sortFilter.value;
+  switch (sortBy) {
+    case "oldest":
+      result.sort((a, b) => new Date(a.updated) - new Date(b.updated));
+      break;
+    case "most-seasons":
+      result.sort((a, b) => b.seasons - a.seasons);
+      break;
+    case "title-az":
+      result.sort((a, b) => a.title.localeCompare(b.title));
+      break;
+    case "recently-updated":
+    default:
+      result.sort((a, b) => new Date(b.updated) - new Date(a.updated));
+      break;
+  }
+
+  filteredPodcasts = result;
+  renderPodcastList();
+}
 
 /**
  * Render the demo list of podcast previews.
  */
 function renderPodcastList() {
-  podcasts.forEach((podcast) => {
+  podcastGrid.innerHTML = "";
+  filteredPodcasts.forEach((podcast) => {
     const preview = document.createElement("podcast-preview");
     preview.setAttribute("podcast-id", podcast.id);
     preview.setAttribute("cover", podcast.image);
@@ -65,5 +115,9 @@ modalOverlay.addEventListener("click", (event) => {
   }
 });
 
+genreFilter.addEventListener("change", applyFiltersAndSort);
+sortFilter.addEventListener("change", applyFiltersAndSort);
 document.addEventListener("podcast-preview-selected", handlePodcastSelected);
+
+populateGenreFilter();
 renderPodcastList();

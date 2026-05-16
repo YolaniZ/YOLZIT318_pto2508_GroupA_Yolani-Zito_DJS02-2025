@@ -203,7 +203,6 @@ export class PodcastPreview extends HTMLElement {
       <style>
         :host {
           display: block;
-          max-width: 360px;
           font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
           color: #111827;
           cursor: pointer;
@@ -211,140 +210,114 @@ export class PodcastPreview extends HTMLElement {
         }
 
         .card {
-          display: grid;
-          grid-template-columns: 120px 1fr;
-          gap: 16px;
-          padding: 18px;
-          border-radius: 18px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          padding: 0;
+          border-radius: 12px;
           background: #ffffff;
           border: 1px solid rgba(15, 23, 42, 0.08);
-          box-shadow: 0 18px 48px rgba(15, 23, 42, 0.08);
+          box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
           transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
-          align-items: stretch;
+          overflow: hidden;
         }
 
         .card:hover,
         .card:focus-within {
-          transform: translateY(-2px);
+          transform: translateY(-4px);
           border-color: rgba(59, 130, 246, 0.28);
-          box-shadow: 0 24px 60px rgba(59, 130, 246, 0.12);
+          box-shadow: 0 12px 32px rgba(59, 130, 246, 0.16);
         }
 
         .cover {
           width: 100%;
-          min-height: 152px;
-          border-radius: 16px;
+          height: 160px;
           object-fit: cover;
-          aspect-ratio: 4 / 5;
-          background: linear-gradient(135deg, #e2e8f0 0%, #f8fafc 100%);
+          background: linear-gradient(135deg, #cbd5e1 0%, #e2e8f0 100%);
         }
 
         .content {
           display: flex;
           flex-direction: column;
-          justify-content: space-between;
+          gap: 10px;
+          padding: 14px;
         }
 
         .title {
-          margin: 0 0 12px;
-          font-size: 1rem;
-          line-height: 1.35;
+          margin: 0;
+          font-size: 0.95rem;
+          line-height: 1.3;
           font-weight: 700;
-          letter-spacing: -0.02em;
-        }
-
-        .meta {
-          display: grid;
-          gap: 10px;
-          margin-bottom: 16px;
+          letter-spacing: -0.01em;
         }
 
         .genres {
           display: flex;
           flex-wrap: wrap;
-          gap: 8px;
+          gap: 6px;
           margin: 0;
           padding: 0;
           list-style: none;
         }
 
         .genre-chip {
-          display: inline-flex;
-          align-items: center;
-          padding: 6px 10px;
-          border-radius: 999px;
-          background: rgba(59, 130, 246, 0.12);
+          display: inline-block;
+          padding: 4px 8px;
+          border-radius: 4px;
+          background: rgba(59, 130, 246, 0.08);
           color: #1e3a8a;
-          font-size: 0.75rem;
+          font-size: 0.7rem;
           font-weight: 600;
           letter-spacing: 0.01em;
+          border: 1px solid rgba(59, 130, 246, 0.2);
         }
 
         .details {
           display: flex;
           flex-wrap: wrap;
-          gap: 12px;
-          font-size: 0.9rem;
-          color: #475569;
+          gap: 8px;
+          font-size: 0.8rem;
+          color: #64748b;
+          margin-top: 4px;
         }
 
         .detail-item {
-          display: inline-flex;
+          display: flex;
           align-items: center;
-          gap: 8px;
+          gap: 4px;
         }
 
-        .detail-label {
+        .detail-icon {
           font-weight: 600;
-          color: #0f172a;
+          color: #475569;
         }
 
         .card:focus-within {
-          box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.18);
-        }
-
-        .card::after {
-          content: "";
-          position: absolute;
-          inset: 0;
-          border-radius: 18px;
-          pointer-events: none;
-        }
-
-        .card-wrapper {
-          position: relative;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
 
         @media (max-width: 640px) {
           .card {
-            grid-template-columns: 1fr;
+            border-radius: 10px;
           }
 
           .cover {
-            width: 100%;
-            min-height: 220px;
+            height: 140px;
           }
         }
       </style>
 
-      <div class="card-wrapper">
-        <article class="card" role="button" tabindex="0" aria-label="Open podcast preview for ${PodcastPreview.escapeHtml(this.title)}">
-          <img class="cover" src="${PodcastPreview.escapeHtml(this.cover)}" alt="Podcast cover for ${PodcastPreview.escapeHtml(this.title)}" />
-          <div class="content">
-            <div>
-              <h2 class="title">${PodcastPreview.escapeHtml(this.title)}</h2>
-              <div class="meta">
-                <div class="genres">${genreChips}</div>
-              </div>
-            </div>
-
-            <div class="details">
-              <span class="detail-item"><span class="detail-label">Seasons:</span> ${PodcastPreview.escapeHtml(String(this.seasons))}</span>
-              <span class="detail-item"><span class="detail-label">${PodcastPreview.escapeHtml(this.formatUpdatedDate(this.updated))}</span></span>
-            </div>
+      <article class="card" role="button" tabindex="0" aria-label="Open podcast preview for ${PodcastPreview.escapeHtml(this.title)}">
+        <img class="cover" src="${PodcastPreview.escapeHtml(this.cover)}" alt="Podcast cover for ${PodcastPreview.escapeHtml(this.title)}" />
+        <div class="content">
+          <h2 class="title">${PodcastPreview.escapeHtml(this.title)}</h2>
+          <div class="genres">${genreChips}</div>
+          <div class="details">
+            <span class="detail-item"><span class="detail-icon">⚫</span> ${PodcastPreview.escapeHtml(String(this.seasons))} season${this.seasons === 1 ? "" : "s"}</span>
+            <span class="detail-item">${PodcastPreview.escapeHtml(this.formatUpdatedDate(this.updated))}</span>
           </div>
-        </article>
-      </div>
+        </div>
+      </article>
     `;
   }
 }
