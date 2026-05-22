@@ -137,6 +137,8 @@ p {
   .podcast-grid {
     grid-template-columns: 1fr;
     gap: 14px;
+  }
+
   h1 {
     font-size: 1.4rem;
   }
