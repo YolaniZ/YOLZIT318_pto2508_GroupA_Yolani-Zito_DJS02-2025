@@ -220,6 +220,7 @@ export class PodcastPreview extends HTMLElement {
           box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
           transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
           overflow: hidden;
+          min-height: 100%;
         }
 
         .card:hover,
@@ -303,6 +304,18 @@ export class PodcastPreview extends HTMLElement {
 
           .cover {
             height: 140px;
+          }
+
+          .content {
+            padding: 12px;
+          }
+
+          .title {
+            font-size: 1rem;
+          }
+
+          .genres {
+            gap: 8px;
           }
         }
       </style>
