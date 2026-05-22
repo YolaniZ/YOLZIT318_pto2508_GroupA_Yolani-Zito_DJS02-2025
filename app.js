@@ -1,12 +1,14 @@
 import "./PodcastPreview.js";
-import { podcasts, genres } from "./data.js";
+import { podcasts, genres, seasons } from "./data.js";
 
 const podcastGrid = document.getElementById("podcastGrid");
 const modalOverlay = document.getElementById("podcastModal");
 const modalTitle = document.getElementById("modalTitle");
-const modalGenres = document.getElementById("modalGenres");
-const modalSeasons = document.getElementById("modalSeasons");
+const modalCover = document.getElementById("modalCover");
+const modalDescription = document.getElementById("modalDescription");
+const modalGenreList = document.getElementById("modalGenreList");
 const modalUpdated = document.getElementById("modalUpdated");
+const modalSeasonsList = document.getElementById("modalSeasonsList");
 const modalClose = document.getElementById("modalClose");
 const genreFilter = document.getElementById("genreFilter");
 const sortFilter = document.getElementById("sortFilter");
@@ -78,6 +80,7 @@ function renderPodcastList() {
     preview.setAttribute("genres", genreNames.join(", "));
     preview.setAttribute("seasons", podcast.seasons);
     preview.setAttribute("updated", podcast.updated);
+    preview.setAttribute("description", podcast.description);
 
     podcastGrid.appendChild(preview);
   });
@@ -87,17 +90,73 @@ function renderPodcastList() {
  * Handle podcast preview selection by opening the modal with details.
  * @param {CustomEvent} event
  */
+function createGenreChips(genres) {
+  modalGenreList.innerHTML = "";
+  if (!genres || !genres.length) {
+    modalGenreList.textContent = "No genres available";
+    return;
+  }
+
+  genres.forEach((genre) => {
+    const chip = document.createElement("span");
+    chip.className = "genre-chip";
+    chip.textContent = genre;
+    modalGenreList.appendChild(chip);
+  });
+}
+
+function renderSeasonList(podcastId) {
+  modalSeasonsList.innerHTML = "";
+  const podcastSeasons = seasons.find((item) => item.id === podcastId);
+
+  if (!podcastSeasons || !podcastSeasons.seasonDetails.length) {
+    const emptyMessage = document.createElement("p");
+    emptyMessage.className = "season-empty";
+    emptyMessage.textContent = "Season details are unavailable for this show.";
+    modalSeasonsList.appendChild(emptyMessage);
+    return;
+  }
+
+  podcastSeasons.seasonDetails.forEach((season) => {
+    const seasonItem = document.createElement("div");
+    seasonItem.className = "season-item";
+
+    const seasonTitle = document.createElement("h4");
+    seasonTitle.textContent = season.title;
+
+    const seasonInfo = document.createElement("p");
+    seasonInfo.textContent = `${season.episodes} episode${season.episodes === 1 ? "" : "s"}`;
+
+    const rightLabel = document.createElement("span");
+    rightLabel.className = "season-count";
+    rightLabel.textContent = `${season.episodes} eps`;
+
+    const leftGroup = document.createElement("div");
+    leftGroup.appendChild(seasonTitle);
+    leftGroup.appendChild(seasonInfo);
+
+    seasonItem.appendChild(leftGroup);
+    seasonItem.appendChild(rightLabel);
+    modalSeasonsList.appendChild(seasonItem);
+  });
+}
+
 function handlePodcastSelected(event) {
-  const { title, genres, seasons, updated } = event.detail;
+  const { id, title, cover, genres, updated, description } = event.detail;
 
   modalTitle.textContent = title;
-  modalGenres.textContent = genres.length ? genres.join(" • ") : "No genres available";
-  modalSeasons.textContent = `${seasons} season${seasons === 1 ? "" : "s"}`;
-  modalUpdated.textContent = updated ? new Date(updated).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }) : "Unknown date";
+  modalCover.src = cover;
+  modalCover.alt = `Podcast cover for ${title}`;
+  modalDescription.textContent = description || "No description available.";
+  createGenreChips(genres);
+  modalUpdated.textContent = updated
+    ? `Last updated: ${new Date(updated).toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })}`
+    : "Last updated: Unknown date";
+  renderSeasonList(id);
 
   modalOverlay.classList.add("open");
   modalOverlay.setAttribute("aria-hidden", "false");

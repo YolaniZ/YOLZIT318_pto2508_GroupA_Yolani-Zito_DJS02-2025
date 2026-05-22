@@ -5,7 +5,7 @@
  */
 export class PodcastPreview extends HTMLElement {
   static get observedAttributes() {
-    return ["cover", "title", "genres", "seasons", "updated", "podcast-id"];
+    return ["cover", "title", "genres", "seasons", "updated", "description", "podcast-id"];
   }
 
   constructor() {
@@ -16,6 +16,7 @@ export class PodcastPreview extends HTMLElement {
     this._genres = [];
     this._seasons = 0;
     this._updated = "";
+    this._description = "";
     this._podcastId = "";
     this._handleClick = this._handleClick.bind(this);
     this._handleKeyDown = this._handleKeyDown.bind(this);
@@ -52,6 +53,9 @@ export class PodcastPreview extends HTMLElement {
         break;
       case "updated":
         this.updated = newValue;
+        break;
+      case "description":
+        this.description = newValue;
         break;
       case "podcast-id":
         this.podcastId = newValue;
@@ -114,6 +118,15 @@ export class PodcastPreview extends HTMLElement {
     this.render();
   }
 
+  get description() {
+    return this._description;
+  }
+
+  set description(value) {
+    this._description = value || "";
+    this.render();
+  }
+
   get podcastId() {
     return this._podcastId;
   }
@@ -145,6 +158,7 @@ export class PodcastPreview extends HTMLElement {
       genres: this.genres,
       seasons: this.seasons,
       updated: this.updated,
+      description: this.description,
     };
 
     this.dispatchEvent(

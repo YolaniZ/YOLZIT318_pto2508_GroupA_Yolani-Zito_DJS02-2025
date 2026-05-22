@@ -41,11 +41,37 @@
 
     <div class="modal-overlay" id="podcastModal" aria-hidden="true">
       <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-        <h2 id="modalTitle">Podcast details</h2>
-        <p><strong>Genres:</strong> <span id="modalGenres"></span></p>
-        <p><strong>Seasons:</strong> <span id="modalSeasons"></span></p>
-        <p><strong>Last updated:</strong> <span id="modalUpdated"></span></p>
-        <button class="modal-close" id="modalClose" type="button">Close</button>
+        <div class="modal-header">
+          <h2 id="modalTitle">Podcast details</h2>
+          <button class="modal-close" id="modalClose" type="button" aria-label="Close podcast details">×</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="modal-summary">
+            <img class="modal-cover" id="modalCover" src="" alt="Podcast cover" />
+
+            <div class="modal-info">
+              <div class="modal-section">
+                <div class="modal-label">Description</div>
+                <p class="modal-description" id="modalDescription"></p>
+              </div>
+
+              <div class="modal-section">
+                <div class="modal-label">Genres</div>
+                <div class="genre-list" id="modalGenreList"></div>
+              </div>
+
+              <div class="modal-meta">
+                <span id="modalUpdated"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-seasons">
+            <h3>Seasons</h3>
+            <div class="season-list" id="modalSeasonsList"></div>
+          </div>
+        </div>
       </div>
     </div>
 
