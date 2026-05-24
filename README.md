@@ -2,85 +2,43 @@
 
 ## Overview
 
-In this project, you will build a reusable and encapsulated **custom HTML element** that displays a podcast preview. The component must follow the **Web Component standard**, using `customElements.define()` and should work independently from the main application logic. This component will enhance modularity, promote reuse, and reduce code duplication across the app.
+This project implements a reusable **Web Component** named `<podcast-preview>` that renders a podcast preview card using native browser APIs.
 
-The component should be designed to **accept podcast data via attributes or properties**, display relevant UI elements (such as title, cover image, and genres), and **communicate with the main application** through custom events.
-
----
-
-## Core Objectives
-
-### Web Component Functionality
-
-- Create a **custom HTML element** using `customElements.define()`.
-- Accept data (cover image, title, genres, number of seasons, and last updated date) **as attributes or properties**.
-- Keep the component **stateless** and reliant on external data provided by the parent.
-- Use **Shadow DOM** for style and logic encapsulation to avoid global conflicts.
-- Trigger a **custom event** when a user interacts with the component (e.g., clicking), so that the parent application can open a modal or take other actions without tightly coupling to the component’s logic.
+The component is stateless and accepts podcast data from the parent application either through attributes or by setting properties. It uses **Shadow DOM** for style encapsulation and dispatches a custom interaction event when the card is selected.
 
 ---
 
-## UI/UX Requirements
+## Project Structure
 
-- The component should render a clean and **visually consistent preview** of each podcast.
-- Display:
-  - Podcast **cover image**
-  - Podcast **title**
-  - **Genre names**
-  - **Number of seasons**
-  - **Last updated** in a human-readable format
-- The component must be **responsive**, and match the overall app design on desktop and mobile.
-- On click, the component must notify the parent app to **open a modal** or navigate to details.
+- `PodcastPreview.js` — Web Component definition and rendering logic.
+- `index.html` — demo page that loads the component and the app logic.
+- `app.js` — app logic that creates preview cards from `data.js`, handles filtering/sorting, and opens a modal on selection.
+- `data.js` — sample podcast data, genre lookup, and season details.
+- `styles.css` — shared styles for the demo page and modal UI.
 
 ---
 
-## Code Quality & Maintainability
+## Component Features
 
-- Write clear, consistent, and modular code.
-- Follow **functional and object-oriented programming** patterns.
-- Document major functions using **JSDoc comments** (parameters, return types, etc.).
-- Use consistent **code formatting** across HTML, CSS, and JavaScript.
-
----
-
-## Technical Constraints
-
-- Do **not** use any third-party frameworks for creating the web component.
-- Use **native JavaScript (ES6+)**, HTML, and CSS.
-- No page reloads or navigation.
-- Ensure compatibility with modern browsers.
+- Accepts podcast data by attribute or property
+- Renders cover image, title, genres, season count, and last update date
+- Supports keyboard activation for accessibility (Enter / Space)
+- Uses Shadow DOM for encapsulated styling
+- Dispatches a custom event when selected
 
 ---
 
-## Deliverables
-
-- A working custom Web Component file (e.g., `PodcastPreview.js`).
-- An HTML demo page showcasing the component usage.
-- A `README.md` file with:
-  - How to use and register the component
-  - Instructions for passing data
-  - How to listen for interaction events
-
----
 ## Usage
 
-### Files added
+### Register the component
 
-- `PodcastPreview.js` — the reusable Web Component definition.
-- `index.html` — demo page showing the component in action.
-- `app.js` — lightweight page logic that creates preview cards and listens for custom events.
-
-### Registering the component
-
-The component registers itself automatically when `PodcastPreview.js` is imported:
+Import the component module in your page or app entry point:
 
 ```js
 import "./PodcastPreview.js";
 ```
 
-### Passing podcast data
-
-You can pass data into the component with attributes:
+### Pass data via attributes
 
 ```html
 <podcast-preview
@@ -90,36 +48,67 @@ You can pass data into the component with attributes:
   genres="Investigative Journalism, True Crime"
   seasons="14"
   updated="2022-11-03T07:00:00.000Z"
+  description="A powerful true-crime docuseries about discovery and recovery."
 ></podcast-preview>
 ```
 
-Or by setting properties in JavaScript:
+### Pass data via properties
 
 ```js
 const preview = document.createElement("podcast-preview");
-preview.cover = "https://example.com/podcast-cover.jpg";
+preview.podcastId = "10716";
+preview.cover = "https://podcast-cover.jpg";
 preview.title = "Something Was Wrong";
 preview.genres = ["Investigative Journalism", "True Crime"];
 preview.seasons = 14;
 preview.updated = "2022-11-03T07:00:00.000Z";
+preview.description = "A powerful true-crime docuseries about discovery and recovery.";
 document.body.appendChild(preview);
 ```
 
-### Listening for interaction events
+### Supported attributes / properties
 
-When a user clicks a podcast card, the component emits a custom event named `podcast-preview-selected`.
-The event bubbles and is composed, so parent logic can listen outside the component:
+- `podcast-id` / `podcastId`
+- `cover`
+- `title`
+- `genres` (comma-separated string or array)
+- `seasons`
+- `updated`
+- `description`
+
+---
+
+## Interaction Event
+
+The component emits a custom event named `podcast-preview-selected` when the card is clicked or activated via keyboard.
+
+The event bubbles and is composed, so it can be handled outside the component:
 
 ```js
 document.addEventListener("podcast-preview-selected", (event) => {
-  const { title, genres, seasons, updated } = event.detail;
-  console.log("Selected podcast:", title, genres, seasons, updated);
+  const { id, title, cover, genres, seasons, updated, description } = event.detail;
+  console.log("Selected podcast:", id, title, genres, seasons, updated, description);
 });
 ```
 
-### Notes
+---
 
-- The component uses Shadow DOM for encapsulated styles and layout.
-- It is stateless and relies on parent-supplied data.
-- The demo layout is responsive and supports desktop and mobile.
+## Demo App Behavior
 
+In this project, `app.js`:
+
+- imports `PodcastPreview.js`
+- builds a list of `<podcast-preview>` cards from `data.js`
+- filters and sorts podcasts by genre or update order
+- listens for `podcast-preview-selected`
+- opens a modal with details when a preview card is selected
+
+---
+
+## Notes
+
+- The component is intentionally stateless: all display data comes from the parent.
+- `genres` may be provided as a comma-separated string via attributes or as a JavaScript array via properties.
+- The demo uses plain ES modules and modern browser APIs; no frameworks are required.
+
+Done by: Yolani Zito
